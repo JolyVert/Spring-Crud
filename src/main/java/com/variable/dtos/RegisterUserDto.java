@@ -1,10 +1,27 @@
 package com.variable.dtos;
 
+import com.variable.entities.User;
+import java.util.Date;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern.Flag;
+import jakarta.validation.constraints.Size;
+
 public class RegisterUserDto {
+
+    @NotEmpty(message = "The email address is required")
+    @Email(message = "The email address is invalid.", flags = { Flag.CASE_INSENSITIVE })
     private String email;
 
+    @NotEmpty(message = "The password is required.")
+    @Size(min = 2, max = 100, message = "The length of password must be more than 5 characters.")
     private String password;
 
+    @NotEmpty(message = "The full name is required.")
+    @Size(min = 2, max = 100, message = "The length of full name must be more than 2 characters.")
     private String name;
 
     public String getEmail() {
