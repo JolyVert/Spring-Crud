@@ -1,4 +1,4 @@
-package com.example.REST;
+package com.variable;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

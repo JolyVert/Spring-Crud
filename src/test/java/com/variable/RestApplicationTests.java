@@ -1,4 +1,4 @@
-package com.example.REST;
+package com.variable;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
