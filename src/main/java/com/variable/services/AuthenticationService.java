@@ -4,10 +4,16 @@ import com.variable.dtos.LoginUserDto;
 import com.variable.dtos.RegisterUserDto;
 import com.variable.entities.User;
 import com.variable.repositories.UserRepository;
+import com.variable.entities.Role;
+import com.variable.entities.enums.RoleEnum;
+import com.variable.repositories.RoleRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
 
 @Service
 public class AuthenticationService {
@@ -17,21 +23,32 @@ public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
 
+    private final RoleRepository roleRepository;
+
     public AuthenticationService(
             UserRepository userRepository,
             AuthenticationManager authenticationManager,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            RoleRepository roleRepository
     ) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
 
     public User signup(RegisterUserDto input) {
-        User user = new User();
+        Optional<Role> optionalRole = roleRepository.findByName(RoleEnum.USER);
+
+        if (optionalRole.isEmpty()) {
+            return null;
+        }
+
+        var user = new User();
                 user.setName(input.getName());
                 user.setEmail(input.getEmail());
                 user.setPassword(passwordEncoder.encode(input.getPassword()));
+                user.setRole(optionalRole.get());
 
         return userRepository.save(user);
     }
