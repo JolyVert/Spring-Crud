@@ -1,6 +1,8 @@
 package com.variable.services;
 
+import com.variable.dtos.LoginUserDto;
 import com.variable.dtos.RegisterUserDto;
+import com.variable.dtos.UpdateUserDto;
 import com.variable.entities.Role;
 import com.variable.entities.User;
 import com.variable.entities.enums.RoleEnum;
@@ -46,5 +48,20 @@ public class UserService {
                 user.setRole(optionalRole.get());
 
         return userRepository.save(user);
+    }
+
+    public User updateUser(UpdateUserDto input, Long id) {
+
+        User updateUser = userRepository.findById(id).get();
+        updateUser.setName(input.getName());
+        updateUser.setEmail(input.getEmail());
+        updateUser.setPassword(passwordEncoder.encode(input.getPassword()));
+
+        return userRepository.save(updateUser);
+    }
+
+    public void deleteUser(long id) {
+        User deleteUser = userRepository.findById(id).get();
+        userRepository.delete(deleteUser);
     }
 }
