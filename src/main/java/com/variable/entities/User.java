@@ -28,8 +28,9 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
+    //@OneToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
     private Role role;
 
     public Role getRole() {
