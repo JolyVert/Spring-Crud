@@ -9,13 +9,12 @@ import com.variable.services.AuthenticationService;
 import com.variable.services.JwtService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/auth")
-@RestController
+@Controller
 public class AuthenticationController {
     private final JwtService jwtService;
 
@@ -32,6 +31,18 @@ public class AuthenticationController {
 
         return ResponseEntity.ok(registeredUser);
     }
+
+    @GetMapping("/login")
+    public String getLoginPage(Model model) {
+        return "login";
+    }
+
+    @GetMapping("/signup")
+    public String getSignupPage(Model model) {
+        return "signup";
+    }
+
+
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {

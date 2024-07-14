@@ -1,5 +1,6 @@
 package com.variable.configs;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -35,8 +36,17 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        //.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .requestMatchers("/static/**", "/images/**", "/css/**", "/js/**", "/webjars/**", "/font/**").permitAll()
                         .requestMatchers("/auth/**", "/").permitAll()
                         .anyRequest().authenticated()
+
+                )
+                .formLogin(form -> form
+                        .loginPage("/auth/login")
+                        .loginProcessingUrl("/auth/perform_login")
+                        .defaultSuccessUrl("/user", true)
+                        .permitAll()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

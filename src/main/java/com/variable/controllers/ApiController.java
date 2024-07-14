@@ -4,10 +4,11 @@ import java.util.List;
 import com.variable.entities.User;
 import com.variable.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 public class ApiController {
 
     @Autowired
@@ -16,7 +17,7 @@ public class ApiController {
 
     @GetMapping(value = "/")
     public String getPage(Model model) {
-        return "welcome";
+        return "index";
     }
 
     /*@PostMapping(value = "/save")
