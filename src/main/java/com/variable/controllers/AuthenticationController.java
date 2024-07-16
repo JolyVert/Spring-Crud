@@ -7,11 +7,16 @@ import com.variable.repositories.UserRepository;
 import com.variable.responses.LoginResponse;
 import com.variable.services.AuthenticationService;
 import com.variable.services.JwtService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RequestMapping("/auth")
 @Controller
@@ -43,9 +48,10 @@ public class AuthenticationController {
     }
 
 
-
+//ResponseEntity<LoginResponse>
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
+    public void authenticate(@RequestBody LoginUserDto loginUserDto, HttpServletResponse response) throws IOException {
+        try {
 
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
 
@@ -53,6 +59,19 @@ public class AuthenticationController {
 
         LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.getExpirationTime(), authenticatedUser);
 
-        return ResponseEntity.ok(loginResponse);
+        Cookie jwtCookie = new Cookie("JWT", jwtToken);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setSecure(true); // Use true in production
+        jwtCookie.setPath("/");
+        jwtCookie.setMaxAge((int) jwtService.getExpirationTime());
+
+        // Add the cookie to the response
+        response.addCookie(jwtCookie);
+
+        // Redirect to the web application
+        response.sendRedirect("/horay");
+    } catch (AuthenticationException e) {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
+}
 }

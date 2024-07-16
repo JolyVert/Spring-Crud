@@ -20,6 +20,11 @@ public class ApiController {
         return "index";
     }
 
+    @GetMapping(value = "/horay")
+    public String getHorayPage(Model model) {
+        return "horay";
+    }
+
     /*@PostMapping(value = "/save")
     public String saveUser(@RequestBody User user) {
         userRepository.save(user);

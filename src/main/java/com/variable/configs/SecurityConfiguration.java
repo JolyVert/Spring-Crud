@@ -38,14 +38,14 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         //.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/static/**", "/images/**", "/css/**", "/js/**", "/webjars/**", "/font/**").permitAll()
-                        .requestMatchers("/auth/**", "/").permitAll()
+                        .requestMatchers("/auth/**", "/", "/favicon.ico").permitAll()
                         .anyRequest().authenticated()
 
                 )
                 .formLogin(form -> form
                         .loginPage("/auth/login")
-                        .loginProcessingUrl("/auth/perform_login")
-                        .defaultSuccessUrl("/user", true)
+                        //.loginProcessingUrl("/auth/perform_login")
+                        //.defaultSuccessUrl("/user/", true)
                         .permitAll()
                 )
                 .sessionManagement(session -> session

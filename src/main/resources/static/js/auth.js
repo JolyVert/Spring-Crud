@@ -3,6 +3,10 @@ function initiateSignup() {
     const PATH = 'http://localhost:8080/auth/signup';
     console.log(form);
     console.dir(form);
+
+    form.onsubmit = (event) => {
+        event.preventDefault();
+    }
     
     const usernameInput = form[0];
     const usernameErrorText = usernameInput.nextElementSibling;
@@ -30,10 +34,9 @@ function initiateSignup() {
 
 
     sendButton.addEventListener('click', (event) => {
-        event.preventDefault();
         if (isUsernameOk && isEmailOk && isPasswordOk) {
             const payload = JSON.stringify({
-                username: usernameInput.value,
+                name: usernameInput.value,
                 email: emailInput.value,
                 password: passwordInput.value
             })
@@ -68,15 +71,18 @@ function initiateLogin() {
     const PATH = 'http://localhost:8080/auth/login';
     const form = document.querySelector('#login-form');
 
+    form.onsubmit = (event) => {
+        event.preventDefault();
+    }
+
     const credentialInput = form[0];
     const passwordInput = form[1];
     const sendButton = form[2];
     const errorTextElement = form.nextElementSibling;
 
     sendButton.addEventListener('click', (event) => {
-        event.preventDefault();
         const payload = JSON.stringify({
-            credential: credentialInput.value,
+            email: credentialInput.value,
             password: passwordInput.value
         })
     
