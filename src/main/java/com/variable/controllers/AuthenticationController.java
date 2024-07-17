@@ -74,4 +74,19 @@ public class AuthenticationController {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }
+
+    @PostMapping("/logout")
+    public void logout(HttpServletResponse response) {
+        Cookie jwtLogoutCookie = new Cookie("JWT", null);
+        jwtLogoutCookie.setHttpOnly(true);
+        jwtLogoutCookie.setSecure(true); // Use true in production
+        jwtLogoutCookie.setPath("/");
+        jwtLogoutCookie.setMaxAge(0); // Delete the cookie
+
+        response.addCookie(jwtLogoutCookie);
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
+
+
+
 }

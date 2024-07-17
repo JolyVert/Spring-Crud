@@ -1,5 +1,7 @@
 package com.variable.configs;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -42,16 +45,24 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
 
                 )
-                .formLogin(form -> form
-                        .loginPage("/auth/login")
-                        //.loginProcessingUrl("/auth/perform_login")
-                        //.defaultSuccessUrl("/user/", true)
-                        .permitAll()
-                )
-                .sessionManagement(session -> session
+                .formLogin(formLogin -> formLogin.disable())
+                .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .authenticationProvider(authenticationProvider)
+                .logout(logout -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "POST"))
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            Cookie jwtCookie = new Cookie("JWT", null);
+                            jwtCookie.setHttpOnly(true);
+                            jwtCookie.setSecure(true); // Use true in production
+                            jwtCookie.setPath("/");
+                            jwtCookie.setMaxAge(0); // Delete the cookie
+
+                            response.addCookie(jwtCookie);
+                            response.setStatus(HttpServletResponse.SC_OK);
+                            response.getWriter().flush();
+                        })
+                )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
