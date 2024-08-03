@@ -12,7 +12,7 @@ public class UpdateUserDto {
     private String password;
 
     @Size(min = 2, max = 100, message = "The length of full name must be more than 2 characters.")
-    private String name;
+    private String username;
 
     public String getEmail() {
         return email;
@@ -30,11 +30,11 @@ public class UpdateUserDto {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

@@ -42,7 +42,13 @@ public class SecurityConfiguration {
                         //.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/static/**", "/images/**", "/css/**", "/js/**", "/webjars/**", "/font/**").permitAll()
                         .requestMatchers("/auth/**", "/", "/favicon.ico").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
+
+                        /*
+                        *  .permitAll() to open
+                        *  .authenticated() to secure
+                        */
+
 
                 )
                 .formLogin(formLogin -> formLogin.disable())

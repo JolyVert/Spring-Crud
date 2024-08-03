@@ -7,6 +7,7 @@ import com.variable.repositories.UserRepository;
 import com.variable.responses.LoginResponse;
 import com.variable.services.AuthenticationService;
 import com.variable.services.JwtService;
+import com.variable.services.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -25,9 +26,13 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
+    private final UserService userService;
+
+    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService, UserService userService) {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
+
+        this.userService = userService;
     }
 
     @PostMapping("/signup")
@@ -63,13 +68,13 @@ public class AuthenticationController {
         jwtCookie.setHttpOnly(true);
         jwtCookie.setSecure(true); // Use true in production
         jwtCookie.setPath("/");
-        jwtCookie.setMaxAge((int) jwtService.getExpirationTime());
+        jwtCookie.setMaxAge((int) jwtService.getExpirationTime()/1000);
 
         // Add the cookie to the response
         response.addCookie(jwtCookie);
 
         // Redirect to the web application
-        response.sendRedirect("/horay");
+        //response.sendRedirect("/horay");
     } catch (AuthenticationException e) {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
@@ -85,6 +90,25 @@ public class AuthenticationController {
 
         response.addCookie(jwtLogoutCookie);
         response.setStatus(HttpServletResponse.SC_OK);
+    }
+
+
+    @PostMapping("/emailValidation")
+    public void emailValidation(@RequestBody RegisterUserDto registerUserDto, HttpServletResponse response) {
+        if(userService.checkIfEmailExists(registerUserDto.getEmail())) {
+            response.setStatus(HttpServletResponse.SC_GONE);
+        } else {
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
+    }
+
+    @PostMapping("/usernameValidation")
+    public void usernameValidation(@RequestBody RegisterUserDto registerUserDto, HttpServletResponse response) {
+        if(userService.checkIfUsernameExists(registerUserDto.getUsername())) {
+            response.setStatus(HttpServletResponse.SC_GONE);
+        } else {
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
     }
 
 

@@ -1,6 +1,5 @@
 package com.variable.services;
 
-import com.variable.dtos.LoginUserDto;
 import com.variable.dtos.RegisterUserDto;
 import com.variable.dtos.UpdateUserDto;
 import com.variable.entities.Role;
@@ -42,7 +41,7 @@ public class UserService {
         }
 
         var user = new User();
-                user.setName(input.getName());
+                user.setUsername(input.getUsername());
                 user.setEmail(input.getEmail());
                 user.setPassword(passwordEncoder.encode(input.getPassword()));
                 user.setRole(optionalRole.get());
@@ -53,7 +52,7 @@ public class UserService {
     public User updateUser(UpdateUserDto input, Long id) {
 
         User updateUser = userRepository.findById(id).get();
-        updateUser.setName(input.getName());
+        updateUser.setUsername(input.getUsername());
         updateUser.setEmail(input.getEmail());
         updateUser.setPassword(passwordEncoder.encode(input.getPassword()));
 
@@ -64,5 +63,13 @@ public class UserService {
         User deleteUser = userRepository.findById(id).get();
 
         userRepository.delete(deleteUser);
+    }
+
+    public boolean checkIfUsernameExists(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    public boolean checkIfEmailExists(String email) {
+        return userRepository.existsByEmail(email);
     }
 }
