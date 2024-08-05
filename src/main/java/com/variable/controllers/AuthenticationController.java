@@ -21,6 +21,7 @@ import java.io.IOException;
 
 @RequestMapping("/auth")
 @Controller
+@CrossOrigin
 public class AuthenticationController {
     private final JwtService jwtService;
 

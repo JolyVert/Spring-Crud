@@ -1,16 +1,16 @@
 package com.variable.dtos;
 
 public class LoginUserDto {
-    private String email;
+    private String credential;
 
     private String password;
 
-    public String getEmail() {
-        return email;
+    public String getCredential() {
+        return credential;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setCredential(String credential) {
+        this.credential = credential;
     }
 
     public String getPassword() {
