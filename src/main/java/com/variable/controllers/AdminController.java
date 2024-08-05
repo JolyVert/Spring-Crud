@@ -26,7 +26,7 @@ public class AdminController {
     }
 
     @PostMapping("/newAdmin")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    //@PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<User> createAdministrator(@RequestBody RegisterUserDto registerUserDto) {
         User createdAdmin = userService.createAdministrator(registerUserDto);
 
@@ -34,7 +34,7 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    @PreAuthorize("hasAnyRole('Admin', 'SUPER_ADMIN')")
+    //@PreAuthorize("hasAnyRole('Admin', 'SUPER_ADMIN')")
     public ResponseEntity<List<User>> allUsers() {
         List <User> users = userService.allUsers();
 
@@ -42,7 +42,7 @@ public class AdminController {
     }
 
     @PutMapping(value = "/update/{id}")
-    @PreAuthorize("hasAnyRole('Admin', 'SUPER_ADMIN')")
+    //@PreAuthorize("hasAnyRole('Admin', 'SUPER_ADMIN')")
     public ResponseEntity<User> updateUser(@PathVariable long id, @RequestBody UpdateUserDto updateUserDto) {
         //User updateUser = userRepository.findById(id).get();
         User updateUser = userService.updateUser(updateUserDto, id);
@@ -51,7 +51,7 @@ public class AdminController {
     }
 
     @DeleteMapping(value = "/delete/{id}")
-    @PreAuthorize("hasAnyRole('Admin', 'SUPER_ADMIN')")
+    //@PreAuthorize("hasAnyRole('Admin', 'SUPER_ADMIN')")
     public String deleteUser(@PathVariable long id){
         userService.deleteUser(id);
         return "Delete user with id: " + id;
