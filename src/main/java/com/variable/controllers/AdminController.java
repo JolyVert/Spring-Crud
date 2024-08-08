@@ -4,6 +4,7 @@ import com.variable.dtos.RegisterUserDto;
 import com.variable.dtos.UpdateUserDto;
 import com.variable.entities.User;
 import com.variable.repositories.UserRepository;
+import com.variable.responses.UserInfoResponse;
 import com.variable.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,9 +36,11 @@ public class AdminController {
 
     @GetMapping("/users")
     @PreAuthorize("hasAnyRole('Admin', 'SUPER_ADMIN')")
-    public ResponseEntity<List<User>> allUsers() {
-        List <User> users = userService.allUsers();
-
+    public ResponseEntity<List<UserInfoResponse>> allUsers() {
+        List <UserInfoResponse> users = userService.allUsers();
+        for(UserInfoResponse user : users) {
+            System.out.println(user.getRole());
+        }
         return ResponseEntity.ok(users);
     }
 

@@ -1,6 +1,7 @@
 package com.variable.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.variable.entities.enums.RoleEnum;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,6 +33,8 @@ public class User implements UserDetails {
     @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private Role role;
+
+    public RoleEnum getRoleName() { return role.getName(); }
 
     public Role getRole() {
         return role;

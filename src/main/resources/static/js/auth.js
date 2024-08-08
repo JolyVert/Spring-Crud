@@ -1,4 +1,5 @@
 // ВСЕМ ПРИВЕТ С ВАМИ БАААААТОНОС
+// ВСЕМ ПРИВЕТ С ВАМИ БАААААТОНОС
 
 function initiateSignup() {
     const form = document.querySelector('#signup-form');
@@ -16,6 +17,7 @@ function initiateSignup() {
     const emalErrorText = emailInput.nextElementSibling;
     const passwordInput = form[2];
     const passwordErrorText = passwordInput.nextElementSibling;
+    const errorTextElement = document.querySelector('.error-text')
     let isEmailOk = false;
     let isPasswordOk = false;
     let isUsernameOk = false;
@@ -24,6 +26,7 @@ function initiateSignup() {
 
     usernameInput.addEventListener('change', (event) => {
         isUsernameOk = checkUsernameInput(usernameInput, usernameErrorText);
+        console.log(isUsernameOk);
     });
 
     emailInput.addEventListener('change', (event) => {
@@ -35,8 +38,9 @@ function initiateSignup() {
     });
 
 
-    sendButton.addEventListener('click', (event) => {
-        if (isUsernameOk && isEmailOk && isPasswordOk) {
+    sendButton.addEventListener('click', async (event) => {
+        console.log(isUsernameOk, isEmailOk, isPasswordOk);
+        if ((await isUsernameOk) && (await isEmailOk) && isPasswordOk) {
             const payload = JSON.stringify({
                 username: usernameInput.value,
                 email: emailInput.value,
@@ -55,17 +59,17 @@ function initiateSignup() {
             }).then(async (response) => {
                 if (response.ok) {
                     const data = await response.json();
-                    console.log("horay!!!");
+                    alert('horay!!!');
+                    window.location.replace("http://localhost:8080/horay");
                     errorTextElement.classList.add('hidden');
                 } else {
-                    console.log("horay!!!");
                     errorTextElement.classList.remove('hidden');
+                    errorTextElement.innerHTML = 'SERVER_ERROR';
                 }
             })
         } else {
-
+            errorTextElement.classList.remove('hidden');
         }
-
     })
 }
 
@@ -84,7 +88,7 @@ function initiateLogin() {
 
     sendButton.addEventListener('click', (event) => {
         const payload = JSON.stringify({
-            email: credentialInput.value,
+            credential: credentialInput.value,
             password: passwordInput.value
         })
 
@@ -97,9 +101,7 @@ function initiateLogin() {
             mode: "cors"
         }).then((response) => {
             if (response.ok) {
-
                 window.location.replace("http://localhost:8080/horay");
-
                 console.log("horay!!!");
                 errorTextElement.classList.add('hidden');
             } else {
@@ -119,10 +121,64 @@ function checkEmailInput(input, errorTextElement) {
         if(input.value == '') {
             errorTextElement.innerText = "Email is required";
         }
-        return false;
+        return Promise.resolve(false);
     } else {
-        errorTextElement.classList.add('hidden');
-        return true;
+        return fetch('http://localhost:8080/auth/emailValidation', {
+            method: "POST",
+            body: JSON.stringify({
+                username: '',
+                email: input.value,
+                password: '',
+            }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+            mode: "cors",
+        })
+        .then(response => {
+            if (response.ok) {
+                errorTextElement.classList.add('hidden');
+                return true;
+            } else {
+                errorTextElement.classList.remove('hidden');
+                errorTextElement.innerText = "This email is already used";
+                return false;
+            }
+        })
+    }
+}
+
+function checkUsernameInput(input, errorTextElement) {
+    if (input.value.length < 3) {
+        errorTextElement.classList.remove('hidden');
+        errorTextElement.innerText = "Username must be at least 3 charachters long";
+        if(input.value == '') {
+            errorTextElement.innerText = "Username is required";
+        }
+        return Promise.resolve(false);
+    } else {
+        return fetch('http://localhost:8080/auth/usernameValidation', {
+            method: "POST",
+            body: JSON.stringify({
+                username: input.value.trim(),
+                email: '',
+                password: '',
+            }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+            mode: "cors",
+        })
+        .then(response => {
+            if (response.ok) {
+                errorTextElement.classList.add('hidden');
+                return true;
+            } else {
+                errorTextElement.classList.remove('hidden');
+                errorTextElement.innerText = "This username is already used";
+                return false;
+            }
+        })
     }
 }
 
@@ -135,21 +191,6 @@ function checkPasswordInput(input, errorTextElement) {
         }
         return 0;
     } else {
-        errorTextElement.classList.add('hidden');
-        return 1;
-    }
-}
-
-function checkUsernameInput(input, errorTextElement) {
-    if (input.value.length < 3) {
-        errorTextElement.classList.remove('hidden');
-        errorTextElement.innerText = "Username must be at least 3 charachters long";
-        if(input.value == '') {
-            errorTextElement.innerText = "Username is required";
-        }
-        return 0;
-    } else {
-
         errorTextElement.classList.add('hidden');
         return 1;
     }

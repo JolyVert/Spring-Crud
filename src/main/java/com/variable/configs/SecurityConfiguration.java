@@ -42,10 +42,10 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         //.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/static/**", "/images/**", "/css/**", "/js/**", "/webjars/**", "/font/**").permitAll()
+                        .requestMatchers("/static/**", "/img/**", "/css/**", "/js/**", "/webjars/**", "/font/**").permitAll()
                         .requestMatchers("/auth/**", "/", "/favicon.ico").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
 
                         /*
                         *  .permitAll() to open

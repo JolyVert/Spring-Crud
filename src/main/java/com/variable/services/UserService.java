@@ -7,6 +7,7 @@ import com.variable.entities.User;
 import com.variable.entities.enums.RoleEnum;
 import com.variable.repositories.RoleRepository;
 import com.variable.repositories.UserRepository;
+import com.variable.responses.UserInfoResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +26,12 @@ public class UserService {
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
-    public List<User> allUsers() {
-        List<User> users = new ArrayList<>();
+    public List<UserInfoResponse> allUsers() {
+        List<UserInfoResponse> users = new ArrayList<>();
 
-        userRepository.findAll().forEach(users::add);
+        userRepository.findAll().forEach(
+                user -> users.add(new UserInfoResponse(user.getId(), user.getUsername(), user.getEmail(), user.getRole(), null, null, null))
+        );
 
         return users;
     }
