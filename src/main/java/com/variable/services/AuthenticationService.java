@@ -63,7 +63,7 @@ public class AuthenticationService {
         );
         System.out.println("Authenticated");
 
-        return userRepository.findByEmail(input.getCredential())
+        return userRepository.findByUsername(input.getCredential())
                 .orElseThrow();
     }
 }
