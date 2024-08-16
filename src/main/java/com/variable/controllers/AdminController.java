@@ -38,9 +38,6 @@ public class AdminController {
     @PreAuthorize("hasAnyRole('Admin', 'SUPER_ADMIN')")
     public ResponseEntity<List<UserInfoResponse>> allUsers() {
         List <UserInfoResponse> users = userService.allUsers();
-        for(UserInfoResponse user : users) {
-            System.out.println(user.getRole());
-        }
         return ResponseEntity.ok(users);
     }
 
@@ -57,7 +54,7 @@ public class AdminController {
     @PreAuthorize("hasAnyRole('Admin', 'SUPER_ADMIN')")
     public String deleteUser(@PathVariable long id){
         userService.deleteUser(id);
-        return "Delete user with id: " + id;
+        return "Deleted user with id: " + id;
     }
 
 }

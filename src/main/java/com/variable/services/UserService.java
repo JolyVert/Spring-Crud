@@ -54,7 +54,7 @@ public class UserService {
 
     public User updateUser(UpdateUserDto input, Long id) {
 
-        User updateUser = userRepository.findById(id).get();
+        User updateUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         updateUser.setUsername(input.getUsername());
         updateUser.setEmail(input.getEmail());
         updateUser.setPassword(passwordEncoder.encode(input.getPassword()));
@@ -63,7 +63,7 @@ public class UserService {
     }
 
     public void deleteUser(long id) {
-        User deleteUser = userRepository.findById(id).get();
+        User deleteUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
 
         userRepository.delete(deleteUser);
     }
