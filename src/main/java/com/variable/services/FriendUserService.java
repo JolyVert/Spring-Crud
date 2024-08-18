@@ -1,9 +1,9 @@
 package com.variable.services;
 
 
-import com.variable.entities.Friendship;
+import com.variable.entities.FriendUser;
 import com.variable.entities.User;
-import com.variable.repositories.FriendshipRepository;
+import com.variable.repositories.FriendUserRepository;
 import com.variable.repositories.UserRepository;
 import com.variable.responses.FriendlistResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,43 +13,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class FriendshipService {
+public class FriendUserService {
 
     @Autowired
-    private FriendshipRepository friendshipRepository;
+    private FriendUserRepository friendUserRepository;
 
     @Autowired
     private UserRepository userRepository;
 
-    public Friendship addFrend(Long user1Id, Long user2Id) {
+    public FriendUser addFrend(Long user1Id, Long user2Id) {
         User user1 = userRepository.findById(user1Id).orElseThrow(() -> new RuntimeException("User1 not found"));
         User user2 = userRepository.findById(user2Id).orElseThrow(() -> new RuntimeException("User2 not found"));
 
-        Friendship friendship = new Friendship();
-        friendship.setUser1(user1);
-        friendship.setUser2(user2);
+        FriendUser friendUser = new FriendUser();
+        friendUser.setUser1(user1);
+        friendUser.setUser2(user2);
 
-        return friendshipRepository.save(friendship);
+        return friendUserRepository.save(friendUser);
     }
 
     public void removeFrend(Long user1Id, Long user2Id) {
-        Friendship friendship = friendshipRepository.findByUser1IdAndUser2Id(user1Id, user2Id).orElseThrow(() -> new RuntimeException("User1 not found"));
-        friendshipRepository.delete(friendship);
+        FriendUser friendUser = friendUserRepository.findByUser1IdAndUser2Id(user1Id, user2Id).orElseThrow(() -> new RuntimeException("User1 not found"));
+        friendUserRepository.delete(friendUser);
     }
 
     public List<FriendlistResponse> getFriends(Long userId) {
-        List<Friendship> friendList = friendshipRepository.findByUser1Id(userId);
+        List<FriendUser> friendList = friendUserRepository.findByUser1Id(userId);
         System.out.println(friendList);
         List<FriendlistResponse> usersFriendList = new ArrayList<>();
-        for (Friendship friendship : friendList) {
-            usersFriendList.add(new FriendlistResponse(friendship.getUser2().getUsername(), null));
+        for (FriendUser friendUser : friendList) {
+            usersFriendList.add(new FriendlistResponse(friendUser.getUser2().getUsername(), null));
         }
         return usersFriendList;
     }
 
 
-    public List<Friendship> findAll() {
-        return friendshipRepository.findAll();
+    public List<FriendUser> findAll() {
+        return friendUserRepository.findAll();
     }
 
 

@@ -1,13 +1,15 @@
 package com.variable.controllers;
 
-import com.variable.dtos.AddFriendDto;
+import com.variable.dtos.UserRelationsDto;
 import com.variable.dtos.UpdateUserDto;
-import com.variable.entities.Friendship;
+import com.variable.entities.BlockedUser;
+import com.variable.entities.FriendUser;
 import com.variable.entities.User;
+import com.variable.responses.BlocklistResponse;
 import com.variable.responses.FriendlistResponse;
-import com.variable.services.FriendshipService;
+import com.variable.services.BlockedUserService;
+import com.variable.services.FriendUserService;
 import com.variable.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -22,11 +24,14 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    private final FriendshipService friendshipService;
+    private final FriendUserService friendUserService;
 
-    public UserController(UserService userService, FriendshipService friendshipService) {
+    private final BlockedUserService blockedUserService;
+
+    public UserController(UserService userService, FriendUserService friendUserService, BlockedUserService blockedUserService) {
         this.userService = userService;
-        this.friendshipService = friendshipService;
+        this.friendUserService = friendUserService;
+        this.blockedUserService = blockedUserService;
     }
 
 
@@ -51,17 +56,17 @@ public class UserController {
 
     @PostMapping(value = "/addFriend")
     @PreAuthorize("isAuthenticated()")
-    public String addFriend(@RequestBody AddFriendDto addFriendDto) {
-        Friendship addedFriend = friendshipService.addFrend(addFriendDto.getUserId(), addFriendDto.getId());
+    public String addFriend(@RequestBody UserRelationsDto userRelationsDto) {
+        FriendUser addedFriend = friendUserService.addFrend(userRelationsDto.getUserId(), userRelationsDto.getId());
 
         return "Added friend";
     }
 
     @DeleteMapping(value = "/removeFriend")
     @PreAuthorize("isAuthenticated()")
-    public String deleteUser(@RequestBody AddFriendDto addFriendDto){
+    public String deleteFriend(@RequestBody UserRelationsDto userRelationsDto){
 
-        friendshipService.removeFrend(addFriendDto.getUserId(), addFriendDto.getId());
+        friendUserService.removeFrend(userRelationsDto.getUserId(), userRelationsDto.getId());
         return "Removed friend";
     }
 
@@ -69,9 +74,34 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<FriendlistResponse>> friends(@RequestBody Long userId) {
 
-        List<FriendlistResponse> friendList = friendshipService.getFriends(userId);
+        List<FriendlistResponse> friendList = friendUserService.getFriends(userId);
 
         return ResponseEntity.ok(friendList);
+    }
+
+    @PostMapping(value = "/blockUser")
+    @PreAuthorize("isAuthenticated()")
+    public String blockUser(@RequestBody UserRelationsDto userRelationsDto) {
+        BlockedUser blockedUser = blockedUserService.blockUser(userRelationsDto.getUserId(), userRelationsDto.getId());
+
+        return "User blocked";
+    }
+
+    @DeleteMapping(value = "/unblockUser")
+    @PreAuthorize("isAuthenticated()")
+    public String unblock(@RequestBody UserRelationsDto userRelationsDto){
+
+        blockedUserService.unblockUser(userRelationsDto.getUserId(), userRelationsDto.getId());
+        return "User unblocked";
+    }
+
+    @GetMapping("/blockedUsers")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<BlocklistResponse>> blockedUsers(@RequestBody Long userId) {
+
+        List<BlocklistResponse> blockList = blockedUserService.getBlockedUsers(userId);
+
+        return ResponseEntity.ok(blockList);
     }
 
 }

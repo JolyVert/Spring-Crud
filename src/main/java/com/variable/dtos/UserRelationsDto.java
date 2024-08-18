@@ -1,6 +1,6 @@
 package com.variable.dtos;
 
-public class AddFriendDto {
+public class UserRelationsDto {
 
     private long userId;
     private long id;
